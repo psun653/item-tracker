@@ -14,8 +14,10 @@ export function netCost(item: Item): number {
 }
 
 export function costPerUse(item: Item, usageCount: number): number | null {
-    if (usageCount === 0) return null;
-    return netCost(item) / usageCount;
+    // For per-use items, treat purchase as the first use when there are no logs
+    const effectiveCount = item.costMethod === 'per-use' && usageCount === 0 ? 1 : usageCount;
+    if (effectiveCount === 0) return null;
+    return netCost(item) / effectiveCount;
 }
 
 export function dailyHoldingCost(item: Item): number {
