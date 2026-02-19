@@ -124,7 +124,7 @@ export const translations = {
         tendToUse: 'You tend to use what you keep.',
         ownershipSuccess: 'Long-term ownership is success.',
         keepsGiving: 'Your gear keeps on giving.',
-        usedAtLeastOnce: 'Used at least once',
+        wellUsed: 'Well used',
         rarelyUsed: 'Rarely used',
         avgLifespan: 'Average Item Lifespan',
 
@@ -285,7 +285,7 @@ export const translations = {
         tendToUse: '珍惜物品，予以善用。',
         ownershipSuccess: '长久的使用即是生活的成功。',
         keepsGiving: '您的装备正在持续创造价值。',
-        usedAtLeastOnce: '至少使用过一次',
+        wellUsed: '常用',
         rarelyUsed: '极少使用',
         avgLifespan: '平均物品寿命',
 
