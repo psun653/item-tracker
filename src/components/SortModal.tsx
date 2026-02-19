@@ -6,9 +6,9 @@ import { Typography, Spacing, Radii } from '../constants/theme';
 interface SortModalProps {
     visible: boolean;
     onClose: () => void;
-    currentOption: SortOption;
+    currentOption: SortOption | null;
     currentDirection: SortDirection;
-    onSelect: (option: SortOption, direction: SortDirection) => void;
+    onSelect: (option: SortOption | null, direction: SortDirection) => void;
     colors: any;
     t: (key: any) => string;
 }
@@ -41,7 +41,12 @@ export default function SortModal({ visible, onClose, currentOption, currentDire
                                             currentOption === opt.option && currentDirection === 'asc' && { backgroundColor: colors.primary, borderColor: colors.primary }
                                         ]}
                                         onPress={() => {
-                                            onSelect(opt.option, 'asc');
+                                            // Toggle off if already selected
+                                            if (currentOption === opt.option && currentDirection === 'asc') {
+                                                onSelect(null, 'asc');
+                                            } else {
+                                                onSelect(opt.option, 'asc');
+                                            }
                                             onClose();
                                         }}
                                     >
@@ -60,7 +65,12 @@ export default function SortModal({ visible, onClose, currentOption, currentDire
                                             currentOption === opt.option && currentDirection === 'desc' && { backgroundColor: colors.primary, borderColor: colors.primary }
                                         ]}
                                         onPress={() => {
-                                            onSelect(opt.option, 'desc');
+                                            // Toggle off if already selected
+                                            if (currentOption === opt.option && currentDirection === 'desc') {
+                                                onSelect(null, 'desc');
+                                            } else {
+                                                onSelect(opt.option, 'desc');
+                                            }
                                             onClose();
                                         }}
                                     >

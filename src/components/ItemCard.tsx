@@ -10,7 +10,7 @@ interface ItemCardProps {
     onPress: () => void;
     themeColors: any;
     isDark: boolean;
-    sortOption?: SortOption;
+    sortOption?: SortOption | null;
 }
 
 export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: ItemCardProps) {
@@ -54,14 +54,12 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
                 break;
             case 'totalUses':
                 countLabel = `${count} ${t('totalUsesSort').toUpperCase()}`;
-                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '—';
+                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '\u2014';
                 costLabel = t('costPerUse');
                 break;
             case 'purchaseCost':
                 countLabel = formatCurrency(item.purchasePrice, item.currency);
-                costValue = isDaily
-                    ? `${days} ${t('daysHeld').toUpperCase()}`
-                    : `${count} ${t('totalUsesSort').toUpperCase()}`;
+                costValue = '';
                 costLabel = t('purchasePrice');
                 break;
             case 'dailyCost':
@@ -71,7 +69,7 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
                 break;
             case 'costPerUse':
                 countLabel = `${count} ${t('totalUsesSort').toUpperCase()}`;
-                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '—';
+                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '\u2014';
                 costLabel = t('costPerUse');
                 break;
             default:
@@ -80,14 +78,14 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
                     : `${count} ${t('totalUsesSort').toUpperCase()}`;
                 costValue = isDaily
                     ? formatCurrency(dhc, item.currency)
-                    : (cpu !== null ? formatCurrency(cpu, item.currency) : '—');
+                    : (cpu !== null ? formatCurrency(cpu, item.currency) : '\u2014');
                 costLabel = isDaily ? t('costPerDay') : t('costPerUse');
         }
     } else {
         // Default: show based on item's costMethod
         costValue = isDaily
             ? formatCurrency(dhc, item.currency)
-            : (cpu !== null ? formatCurrency(cpu, item.currency) : '—');
+            : (cpu !== null ? formatCurrency(cpu, item.currency) : '\u2014');
         countLabel = isDaily
             ? `${days} ${t('daysHeld').toUpperCase()}`
             : `${count} ${t('totalUsesSort').toUpperCase()}`;
@@ -121,10 +119,14 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
 
                 <View style={styles.metaRow}>
                     <Text style={[styles.metaText, { color: colors.textSecondary }]}>{countLabel}</Text>
-                    <Text style={[styles.dot, { color: colors.textSecondary }]}>•</Text>
-                    <Text style={[styles.metaText, { color: colors.success, fontWeight: '700' }]}>
-                        {costValue}
-                    </Text>
+                    {costValue !== '' && (
+                        <>
+                            <Text style={[styles.dot, { color: colors.textSecondary }]}>\u2022</Text>
+                            <Text style={[styles.metaText, { color: colors.success, fontWeight: '700' }]}>
+                                {costValue}
+                            </Text>
+                        </>
+                    )}
                     <Text style={[styles.metaText, { color: colors.textSecondary, marginLeft: 4, fontSize: 8 }]}>
                         {costLabel.toUpperCase()}
                     </Text>
