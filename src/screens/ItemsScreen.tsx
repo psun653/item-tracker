@@ -188,6 +188,7 @@ export default function ItemsScreen() {
                                     onPress={() => navigation.navigate('ItemDetail', { itemId: item.id })}
                                     isDark={isDark}
                                     themeColors={colors}
+                                    sortOption={sortOption}
                                 />
                             )}
                             ListEmptyComponent={
