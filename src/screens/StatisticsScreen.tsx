@@ -106,7 +106,7 @@ export default function StatisticsScreen() {
                 const first = purchasedItems[0];
                 const count = purchasedItems.length;
                 if (language === 'zh-CN') {
-                    event = `购入 ${first.emoji} ${first.name}${count > 1 ? ` 等${count}件物品` : ''}`;
+                    event = `\u8D2D\u5165 ${first.emoji} ${first.name}${count > 1 ? ` \u7B49${count}\u4EF6\u7269\u54C1` : ''}`;
                 } else {
                     event = `Purchased ${first.emoji} ${first.name}${count > 1 ? ` +${count - 1} more` : ''}`;
                 }
@@ -160,18 +160,18 @@ export default function StatisticsScreen() {
     // --- Usage Ratio Data ---
     const usageStats = useMemo(() => {
         const activeItems = items.filter(i => i.status === 'active');
-        const usedAtLeastOnce = activeItems.filter(i => {
+        const wellUsed = activeItems.filter(i => {
             const count = usageLogs.filter(l => l.itemId === i.id).length;
-            return count > 0;
+            return count >= 3;
         }).length;
-        const rarelyUsed = activeItems.length - usedAtLeastOnce;
-        return { usedAtLeastOnce, rarelyUsed, total: activeItems.length };
+        const rarelyUsed = activeItems.length - wellUsed;
+        return { wellUsed, rarelyUsed, total: activeItems.length };
     }, [items, usageLogs]);
 
     const handleShare = async () => {
         try {
             const uri = await captureRef(viewShotRef, { format: 'jpg', quality: 0.9 });
-            await Share.share({ url: uri, message: 'Check out my minimalist item tracking insights! 📊' });
+            await Share.share({ url: uri, message: 'Check out my minimalist item tracking insights! \uD83D\uDCCA' });
         } catch {
             Alert.alert('Error', 'Failed to generate share image.');
         }
@@ -186,7 +186,7 @@ export default function StatisticsScreen() {
                     <View style={styles.header}>
                         <View style={styles.headerSide}>
                             <TouchableOpacity onPress={() => setThemeMode(isDark ? 'light' : 'dark')}>
-                                <Text style={[styles.menuIcon, { color: colors.textSecondary }]}>{isDark ? '☾' : '☀'}</Text>
+                                <Text style={[styles.menuIcon, { color: colors.textSecondary }]}>{isDark ? '\u263E' : '\u2600'}</Text>
                             </TouchableOpacity>
                         </View>
                         <Text style={[styles.appTitle, { color: colors.textSecondary, fontSize: language === 'zh-CN' ? 22 : 14 }]}>
@@ -194,7 +194,7 @@ export default function StatisticsScreen() {
                         </Text>
                         <View style={styles.headerSide}>
                             <TouchableOpacity style={{ alignItems: 'flex-end' }}>
-                                <Text style={[styles.menuIcon, { color: colors.textSecondary }]}>✉</Text>
+                                <Text style={[styles.menuIcon, { color: colors.textSecondary }]}>\u2709</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -233,7 +233,7 @@ export default function StatisticsScreen() {
                                 />
                             </View>
                             <Text style={[styles.moduleCaption, { color: colors.textSecondary }]}>
-                                “{t('costOverTime')}”
+                                \u201C{t('costOverTime')}\u201D
                             </Text>
                         </View>
 
@@ -243,8 +243,8 @@ export default function StatisticsScreen() {
 
                             <View style={styles.ratioContainer}>
                                 <View style={styles.ratioItem}>
-                                    <Text style={[styles.ratioValue, { color: colors.textPrimary }]}>{usageStats.usedAtLeastOnce}</Text>
-                                    <Text style={[styles.ratioLabel, { color: colors.textMuted }]}>{t('usedAtLeastOnce').toUpperCase()}</Text>
+                                    <Text style={[styles.ratioValue, { color: colors.textPrimary }]}>{usageStats.wellUsed}</Text>
+                                    <Text style={[styles.ratioLabel, { color: colors.textMuted }]}>{t('wellUsed').toUpperCase()}</Text>
                                 </View>
                                 <View style={styles.ratioDivider} />
                                 <View style={styles.ratioItem}>
@@ -254,7 +254,7 @@ export default function StatisticsScreen() {
                             </View>
 
                             <Text style={[styles.moduleCaption, { color: colors.textSecondary }]}>
-                                “{t('tendToUse')}”
+                                \u201C{t('tendToUse')}\u201D
                             </Text>
                         </View>
 
@@ -265,7 +265,7 @@ export default function StatisticsScreen() {
                             <View style={styles.lifespanContent}>
                                 <Text style={[styles.lifespanLabel, { color: colors.textSecondary }]}>{t('avgLifespan').toUpperCase()}</Text>
                                 <Text style={[styles.lifespanValue, { color: colors.textPrimary }]}>
-                                    {avgLifespan} <Text style={{ fontSize: 24, fontWeight: '300', color: colors.primary }}>{language === 'zh-CN' ? '日' : 'DAYS'}</Text>
+                                    {avgLifespan} <Text style={{ fontSize: 24, fontWeight: '300', color: colors.primary }}>{language === 'zh-CN' ? '\u65E5' : 'DAYS'}</Text>
                                 </Text>
                             </View>
 
@@ -273,18 +273,18 @@ export default function StatisticsScreen() {
                                 <View style={[styles.longestHeldRow, { borderTopColor: colors.border }]}>
                                     <Text style={[styles.longestHeldText, { color: colors.textSecondary }]}>
                                         {language === 'zh-CN'
-                                            ? `你已与 `
+                                            ? `\u4F60\u5DF2\u4E0E `
                                             : `You've lived with `}
                                         <Text style={{ color: colors.primary, fontWeight: '700' }}>{longestHeldItem.emoji} {longestHeldItem.name}</Text>
                                         {language === 'zh-CN'
-                                            ? ` 相伴 ${longestHeldDays} 天了`
+                                            ? ` \u76F8\u4F34 ${longestHeldDays} \u5929\u4E86`
                                             : ` for ${longestHeldDays} days`}
                                     </Text>
                                 </View>
                             )}
 
                             <Text style={[styles.moduleCaption, { color: colors.textSecondary }]}>
-                                “{t('ownershipSuccess')}”
+                                \u201C{t('ownershipSuccess')}\u201D
                             </Text>
                         </View>
 

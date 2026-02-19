@@ -118,7 +118,7 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
                 <Text style={[styles.title, { color: colors.textPrimary }]} numberOfLines={1}>{item.name}</Text>
 
                 <View style={styles.metaRow}>
-                    <Text style={[styles.metaText, { color: colors.textSecondary }]}>{countLabel}</Text>
+                    <Text style={[styles.metaText, { color: sortOption === 'purchaseCost' ? colors.success : colors.textSecondary, fontWeight: sortOption === 'purchaseCost' ? '700' : '300' }]}>{countLabel}</Text>
                     {costValue !== '' && (
                         <>
                             <Text style={[styles.dot, { color: colors.textSecondary }]}>\u2022</Text>
@@ -127,7 +127,7 @@ export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: Ite
                             </Text>
                         </>
                     )}
-                    <Text style={[styles.metaText, { color: colors.textSecondary, marginLeft: 4, fontSize: 8 }]}>
+                    <Text style={[styles.metaText, { color: colors.textSecondary, marginLeft: 4 }]}>
                         {costLabel.toUpperCase()}
                     </Text>
                 </View>
