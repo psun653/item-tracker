@@ -41,7 +41,7 @@ export default function ItemsScreen() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     // Sorting state
-    const [sortOption, setSortOption] = useState<SortOption>('daysHeld');
+    const [sortOption, setSortOption] = useState<SortOption | null>(null);
     const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
     const [showSortModal, setShowSortModal] = useState(false);
 
@@ -63,7 +63,7 @@ export default function ItemsScreen() {
             i.category.toLowerCase().includes(search.toLowerCase())
         );
 
-    const sortedItems = sortItems(filteredItems, usageLogs, sortOption, sortDirection);
+    const sortedItems = sortOption ? sortItems(filteredItems, usageLogs, sortOption, sortDirection) : filteredItems;
 
     // --- Categories Logic ---
     const handleSaveCategory = () => {
@@ -188,7 +188,7 @@ export default function ItemsScreen() {
                                     onPress={() => navigation.navigate('ItemDetail', { itemId: item.id })}
                                     isDark={isDark}
                                     themeColors={colors}
-                                    sortOption={sortOption}
+                                    sortOption={sortOption ?? undefined}
                                 />
                             )}
                             ListEmptyComponent={
