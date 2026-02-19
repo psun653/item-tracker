@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
-import { Item } from '../types';
+import { Item, SortOption } from '../types';
 import { useStore } from '../store/useStore';
 import { daysSince, costPerUse, dailyHoldingCost, formatCurrency } from '../utils/calculations';
 import { useLanguage } from '../context/LanguageContext';
@@ -10,9 +10,10 @@ interface ItemCardProps {
     onPress: () => void;
     themeColors: any;
     isDark: boolean;
+    sortOption?: SortOption;
 }
 
-export function ItemCard({ item, onPress, themeColors, isDark }: ItemCardProps) {
+export function ItemCard({ item, onPress, themeColors, isDark, sortOption }: ItemCardProps) {
     const { t } = useLanguage();
     // FIX: Safe access for store data
     const selector = (s: any) => s.usageLogs;
@@ -24,10 +25,6 @@ export function ItemCard({ item, onPress, themeColors, isDark }: ItemCardProps) 
     const usageLogs = allLogs.filter((log: any) => log.itemId === item.id);
     const count = usageLogs.length;
     const days = daysSince(item.purchaseDate);
-
-    // Calculate today's uses
-    const today = new Date().toDateString();
-    const usesToday = usageLogs.filter((l: any) => new Date(l.date).toDateString() === today).length;
 
     // Default colors protection
     const colors = themeColors || {
@@ -43,15 +40,59 @@ export function ItemCard({ item, onPress, themeColors, isDark }: ItemCardProps) 
     const cpu = costPerUse(item, count);
     const dhc = dailyHoldingCost(item);
 
-    const costValue = isDaily
-        ? formatCurrency(dhc, item.currency)
-        : (cpu !== null ? formatCurrency(cpu, item.currency) : '—');
+    // Determine display based on active sort option
+    let countLabel: string;
+    let costValue: string;
+    let costLabel: string;
 
-    const countLabel = isDaily
-        ? `${days} ${t('daysHeld').toUpperCase()}`
-        : `${count} ${t('totalUsesSort').toUpperCase()}`;
-
-    const costLabel = isDaily ? t('costPerDay') : t('costPerUse');
+    if (sortOption) {
+        switch (sortOption) {
+            case 'daysHeld':
+                countLabel = `${days} ${t('daysHeld').toUpperCase()}`;
+                costValue = formatCurrency(dhc, item.currency);
+                costLabel = t('costPerDay');
+                break;
+            case 'totalUses':
+                countLabel = `${count} ${t('totalUsesSort').toUpperCase()}`;
+                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '—';
+                costLabel = t('costPerUse');
+                break;
+            case 'purchaseCost':
+                countLabel = formatCurrency(item.purchasePrice, item.currency);
+                costValue = isDaily
+                    ? `${days} ${t('daysHeld').toUpperCase()}`
+                    : `${count} ${t('totalUsesSort').toUpperCase()}`;
+                costLabel = t('purchasePrice');
+                break;
+            case 'dailyCost':
+                countLabel = `${days} ${t('daysHeld').toUpperCase()}`;
+                costValue = formatCurrency(dhc, item.currency);
+                costLabel = t('costPerDay');
+                break;
+            case 'costPerUse':
+                countLabel = `${count} ${t('totalUsesSort').toUpperCase()}`;
+                costValue = cpu !== null ? formatCurrency(cpu, item.currency) : '—';
+                costLabel = t('costPerUse');
+                break;
+            default:
+                countLabel = isDaily
+                    ? `${days} ${t('daysHeld').toUpperCase()}`
+                    : `${count} ${t('totalUsesSort').toUpperCase()}`;
+                costValue = isDaily
+                    ? formatCurrency(dhc, item.currency)
+                    : (cpu !== null ? formatCurrency(cpu, item.currency) : '—');
+                costLabel = isDaily ? t('costPerDay') : t('costPerUse');
+        }
+    } else {
+        // Default: show based on item's costMethod
+        costValue = isDaily
+            ? formatCurrency(dhc, item.currency)
+            : (cpu !== null ? formatCurrency(cpu, item.currency) : '—');
+        countLabel = isDaily
+            ? `${days} ${t('daysHeld').toUpperCase()}`
+            : `${count} ${t('totalUsesSort').toUpperCase()}`;
+        costLabel = isDaily ? t('costPerDay') : t('costPerUse');
+    }
 
     return (
         <TouchableOpacity
